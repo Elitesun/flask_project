@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un Paiement</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-3xl">
+        <h1 class="text-4xl font-bold mb-8 text-center text-blue-400">Ajouter un Paiement</h1>
+        
+        {% if message %}
+        <div class="bg-red-600 text-white p-4 rounded-lg mb-6 shadow-lg">
+            {{ message }}
+        </div>
+        {% endif %}
+
+        {% if clients %}
+            <form id="paymentForm" method="POST" action="{{ url_for('payment') }}" class="bg-gray-800 p-6 rounded-lg shadow-xl space-y-6">
+                <div class="space-y-2">
+                    <label for="client_id" class="block text-gray-300 text-sm font-medium">Sélectionner un Client:</label>
+                    <select id="client_id" name="client_id" required 
+                            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-md bg-gray-700 text-white">
+                        <option value="">-- Sélectionner un Client --</option>
+                        {% for client in clients %}
+                            <option value="{{ client[0] }}">{{ client[1] }} ({{ client[2] }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div id="items-container" class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-300">Produits</h2>
+                    <div class="item-entry bg-gray-700 p-4 rounded-lg space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-gray-300 text-sm font-medium">Nom du Produit:</label>
+                                <input type="text" name="product_name" required 
+                                       placeholder="Nom du produit"
+                                       class="mt-1 block w-full px-3 py-2 border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-md bg-gray-600 text-white placeholder-gray-400">
+                            </div>
+                            <div>
+                                <label class="block text-gray-300 text-sm font-medium">Quantité:</label>
+                                <input type="number" name="quantity" required min="1" value="1"
+                                       class="mt-1 block w-full px-3 py-2 border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-md bg-gray-600 text-white">
+                            </div>
+                            <div>
+                                <label class="block text-gray-300 text-sm font-medium">Prix Unitaire (CFA):</label>
+                                <input type="number" name="price" required min="0" step="1"
+                                       placeholder="0"
+                                       class="mt-1 block w-full px-3 py-2 border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-md bg-gray-600 text-white placeholder-gray-400">
+                            </div>
+                        </div>
+                        <button type="button" class="remove-item text-red-400 hover:text-red-300 text-sm hidden">
+                            Supprimer ce produit
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex justify-center">
+                    <button type="button" id="add-item" 
+                            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                        Ajouter un autre produit
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-between pt-4">
+                    <a href="{{ url_for('index') }}" 
+                       class="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-150">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                        </svg>
+                        Retour à l'Accueil
+                    </a>
+                    <button type="submit" 
+                            class="inline-flex items-center px-6 py-3 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                        Enregistrer le Paiement
+                    </button>
+                </div>
+            </form>
+        {% else %}
+            <div class="bg-red-600 text-white p-4 rounded-lg mb-6 shadow-lg">
+                Aucun client enregistré. Veuillez d'abord enregistrer un client.
+            </div>
+            <div class="flex justify-center">
+                <a href="{{ url_for('register') }}" 
+                   class="inline-flex items-center px-6 py-3 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                    </svg>
+                    Enregistrer un Nouveau Client
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const itemsContainer = document.getElementById('items-container');
+            const addItemButton = document.getElementById('add-item');
+
+            // Add new item entry
+            addItemButton.addEventListener('click', function() {
+                const newItem = document.querySelector('.item-entry').cloneNode(true);
+                // Clear input values
+                newItem.querySelectorAll('input').forEach(input => input.value = '');
+                // Show remove button
+                newItem.querySelector('.remove-item').classList.remove('hidden');
+                itemsContainer.appendChild(newItem);
+            });
+
+            // Remove item entry
+            itemsContainer.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-item')) {
+                    if (document.querySelectorAll('.item-entry').length > 1) {
+                        e.target.closest('.item-entry').remove();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

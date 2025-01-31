@@ -1,0 +1,17 @@
+{
+    "dbcode.connections": [
+        {
+            "connectionId": "9cCaaCA6JgKBKPb4CdIx4",
+            "name": "Flask",
+            "driver": "sqlite",
+            "color": "#F00019",
+            "socket": "c:\\Users\\ELITESUN\\Desktop\\flask\\database.db",
+            "driverOptions": {
+                "extensions": [
+                    "sqlite-vec"
+                ]
+            },
+            "connectionType": "socket"
+        }
+    ]
+}
